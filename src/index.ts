@@ -3,7 +3,7 @@ import 'express-async-errors';
 import express, { Express } from 'express';
 import session from 'express-session';
 import connectSqlite3 from 'connect-sqlite3';
-import { registerUser, logIn } from './controllers/UserController';
+import { registerUser, logIn, getAllUser } from './controllers/UserController';
 
 const app: Express = express();
 const { PORT, COOKIE_SECRET } = process.env;
@@ -23,6 +23,7 @@ app.use(
 
 app.use(express.json());
 
+app.get('/api/users', getAllUser);
 app.post('/api/users', registerUser); // Create an Account
 app.post('/api/login', logIn); // log in to an Account
 

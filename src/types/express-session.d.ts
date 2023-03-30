@@ -10,7 +10,6 @@ declare module 'express-session' {
       isAdmin: boolean;
     };
     isLoggedIn: boolean;
-    // logInAttempts: number;
     logInTimeout: string;
   }
 }

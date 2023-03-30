@@ -31,4 +31,8 @@ async function getUserById(userId: string): Promise<User | null> {
   return user;
 }
 
-export { getUserByUsername, addNewUser, getUserById };
+async function allUserData(): Promise<User[]> {
+  return await userRepository.find();
+}
+
+export { getUserByUsername, addNewUser, getUserById, allUserData };
