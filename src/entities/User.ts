@@ -12,10 +12,10 @@ export class User {
   @Column({ unique: true })
   passwordHash: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   isPro: boolean;
 
-  @Column({ default: false })
+  @Column({ default: true })
   isAdmin: boolean;
 
   @OneToMany(() => Link, (link) => link.user)
