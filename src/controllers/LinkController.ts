@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createNewLink } from '../models/LinkModel';
+import { createNewLink, updateLinkVisits, getLinkById } from '../models/LinkModel';
 import { parseDatabaseError } from '../utils/db-utils';
 import { getUserById } from '../models/UserModel';
 
@@ -43,5 +43,21 @@ async function shortenUrl(req: Request, res: Response): Promise<void> {
     res.status(500).json(databaseErrorMessage);
   }
 }
+async function getOriginalUrl(req: Request, res: Response): Promise<void> {
+  // Retrieve the link data using the targetLinkId from the path parameter
+  // Check if you got back `null`
+  // send the appropriate response
+  const { targetLinkId } = req.params as TargetLinkId;
+  if (!targetLinkId) {
+    res.sendStatus(404);
+  }
+  const link = await getLinkById(targetLinkId);
+  // Call the appropriate function to increment the number of hits and the last accessed date
+  const targetURL = await updateLinkVisits(link);
+  // Redirect the client to the original URL
+  console.log('Result: ', targetURL.originalUrl);
+  console.log(targetURL);
+  res.redirect(301, targetURL.originalUrl);
+}
 
-export { shortenUrl };
+export { shortenUrl, getOriginalUrl };

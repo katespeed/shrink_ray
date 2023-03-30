@@ -35,7 +35,6 @@ async function registerUser(req: Request, res: Response): Promise<void> {
 
 async function logIn(req: Request, res: Response): Promise<void> {
   console.log(req.session);
-
   const now = new Date();
   // NOTES: We need to convert the date string back into a Date() object
   //        `parseISO()` does the conversion

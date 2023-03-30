@@ -5,11 +5,11 @@ import { User } from '../entities/User';
 
 const linkRepository = AppDataSource.getRepository(Link);
 
-async function getLinkById(userId: string): Promise<Link | null> {
+async function getLinkById(linkId: string): Promise<Link | null> {
   const link = await linkRepository
     .createQueryBuilder('link')
     .leftJoinAndSelect('link.user', 'user')
-    .where('link.userId = :userId', { userId })
+    .where('link.linkId = :linkId', { linkId })
     .getOne();
   return link;
 }
@@ -35,4 +35,16 @@ async function createNewLink(originalUrl: string, linkId: string, creator: User)
   return newLink;
 }
 
-export { getLinkById, createNewLink };
+async function updateLinkVisits(link: Link): Promise<Link> {
+  // Increment the link's number of hits propertys
+  let updatedLink = link;
+  updatedLink.numHits += 1;
+  // Create a new date object and assign it to the link's `lastAccessedOn` property.
+  const now = new Date();
+  updatedLink.lastAccessedOn = now;
+  // Update the link's numHits and lastAccessedOn in the database
+  updatedLink = await linkRepository.save(updatedLink);
+  return updatedLink;
+}
+
+export { getLinkById, createNewLink, updateLinkVisits };

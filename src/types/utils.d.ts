@@ -12,3 +12,7 @@ type AuthRequest = {
 type RequestUrl = {
   originalUrl: string;
 };
+
+type TargetLinkId = {
+  targetLinkId: string;
+};
