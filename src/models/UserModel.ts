@@ -5,8 +5,12 @@ const userRepository = AppDataSource.getRepository(User);
 
 async function getUserByUsername(username: string): Promise<User | null> {
   // TODO: Get the user by where the username matches the parameter
-  return await userRepository.findOne({ where: { username } });
-  // This should also retrieve the `links` relation
+  const user = await userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.link', 'link')
+    .where('user.username = :username', { username })
+    .getOne();
+  return user;
 }
 
 async function addNewUser(username: string, passwordHash: string): Promise<User | null> {
@@ -18,4 +22,13 @@ async function addNewUser(username: string, passwordHash: string): Promise<User 
   return newUser;
 }
 
-export { getUserByUsername, addNewUser };
+async function getUserById(userId: string): Promise<User | null> {
+  const user = await userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.link', 'link')
+    .where('user.userId = :userId', { userId })
+    .getOne();
+  return user;
+}
+
+export { getUserByUsername, addNewUser, getUserById };
