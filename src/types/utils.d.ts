@@ -13,6 +13,14 @@ type RequestUrl = {
   originalUrl: string;
 };
 
-type TargetLinkId = {
+type TargetLinkIdParam = {
   targetLinkId: string;
+};
+
+type TargetUserIdParam = {
+  targetUserId: string;
+};
+
+type LinkIdParam = {
+  linkId: string;
 };

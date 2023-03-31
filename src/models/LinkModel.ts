@@ -47,4 +47,65 @@ async function updateLinkVisits(link: Link): Promise<Link> {
   return updatedLink;
 }
 
-export { getLinkById, createNewLink, updateLinkVisits };
+async function getLinksByUserId(userId: string): Promise<Link[]> {
+  const links = await linkRepository
+    .createQueryBuilder('link')
+    .where({ user: { userId } }) // NOTES: This is how you do nested WHERE clauses
+    .leftJoinAndSelect('link.user', 'user') /* TODO: specify the relation you want to join with */
+    .select([
+      'link.linkId',
+      'link.originalUrl',
+      'user.userId',
+      'user.username',
+      'user.isAdmin',
+    ]) /* TODO: specify the fields you want */
+    .getMany();
+  return links;
+}
+
+async function getLinksByUserIdForOwnAccount(userId: string): Promise<Link[]> {
+  const links = await linkRepository
+    .createQueryBuilder('link')
+    .where('user.userId = :userId', { userId }) // NOTES: This is how you do nested WHERE clauses
+    .leftJoinAndSelect('link.user', 'user') /* TODO: specify the relation you want to join with */
+    .select([
+      'link.linkId',
+      'link.originalUrl',
+      'link.numHits',
+      'link.lastAccessedOn',
+      'user.userId',
+      'user.username',
+      'user.isPro',
+      'user.isAdmin',
+    ]) /* TODO: specify the fields you want */
+    .getMany();
+  return links;
+}
+
+async function linkBelongsToUser(linkId: string, userId: string): Promise<boolean> {
+  const reviewExists = await linkRepository
+    .createQueryBuilder('link')
+    .leftJoinAndSelect('link.user', 'user')
+    .where('link.linkId = :linkId', { linkId })
+    .andWhere('user.userId = :userId', { userId })
+    .getExists();
+  return reviewExists;
+}
+
+async function deleteLinksById(linkId: string): Promise<void> {
+  await linkRepository
+    .createQueryBuilder('link')
+    .delete()
+    .where('linkId = :linkId', { linkId })
+    .execute();
+}
+
+export {
+  getLinkById,
+  createNewLink,
+  updateLinkVisits,
+  getLinksByUserId,
+  getLinksByUserIdForOwnAccount,
+  deleteLinksById,
+  linkBelongsToUser,
+};
