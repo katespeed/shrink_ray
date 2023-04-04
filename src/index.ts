@@ -27,12 +27,14 @@ app.use(
   })
 );
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.static('public', { extensions: ['html'] }));
 
 app.get('/api/users', getAllUser);
-app.post('/api/users', registerUser); // Create an Account
+app.post('/api/register', registerUser); // Create an Account
 app.post('/api/login', logIn); // log in to an Account
-app.get('/api/link', shortenUrl); // shortenUrls
+app.get('/api/links', shortenUrl); // shortenUrls
 app.get('/api/link/:targetLinkId', getOriginalUrl);
 app.get('/api/user/:targetUserId/links', getLinksForUser); // Get some Links by UserId
 app.post('/api/user/:linkId', deleteLinksForUser); // delete Links by UserId

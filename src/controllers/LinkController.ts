@@ -14,7 +14,7 @@ import {
 async function shortenUrl(req: Request, res: Response): Promise<void> {
   // Make sure the user is logged in
   if (!req.session.isLoggedIn) {
-    res.sendStatus(401);
+    res.redirect('/login');
     return;
   }
   // Get the userId from `req.session`
